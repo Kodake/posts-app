@@ -4,22 +4,23 @@ import store from "../store/postStore";
 import { useEffect } from "react";
 
 const usePosts = () => {
+  const { id } = useParams<string>();
   let nav = useNavigate();
   const [
+    post,
     posts,
     listar,
     buscarPorId,
     setPost,
-    validatePost,
     guardar,
     actualizar,
     limpiar,
   ] = store((state) => [
+    state.post,
     state.posts,
     state.listar,
     state.buscarPorId,
     state.setPost,
-    state.validatePost,
     state.guardar,
     state.actualizar,
     state.limpiar,
@@ -32,11 +33,9 @@ const usePosts = () => {
   };
 
   const buscarPostPorId = () => {
-    const { id } = useParams();
-
     useEffect(() => {
       if (id !== undefined) {
-        buscarPorId(parseInt(id));
+        buscarPorId(id);
       }
     }, []);
   };
@@ -48,9 +47,7 @@ const usePosts = () => {
 
   const handleSavePost = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!validatePost()) {
-      return;
-    }
+
     const post = await guardar();
     if (post === null) {
       return;
@@ -65,17 +62,15 @@ const usePosts = () => {
 
   const handleUpdatePost = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!validatePost()) {
-      return;
-    }
-    const post = await actualizar();
+
+    const post = await actualizar(id!);
     if (post === null) {
       return;
     }
     nav("/posts");
     useNotifications(
       "Guardado",
-      "El registro ha sido guardado satisfactoriamente.",
+      "El registro ha sido actualizado satisfactoriamente.",
       "success"
     );
   };
@@ -85,6 +80,7 @@ const usePosts = () => {
   };
 
   return {
+    post,
     posts,
     listarPosts,
     buscarPostPorId,

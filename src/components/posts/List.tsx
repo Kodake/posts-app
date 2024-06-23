@@ -32,7 +32,7 @@ const List = () => {
                   <td>{post.content}</td>
                   <td className="text-center">
                     <Link
-                      to={`/posts/editar/${post._id}`}
+                      to={`/posts/edit/${post._id}`}
                       className="btn btn-warning btn-sm me-sm-3"
                     >
                       <svg

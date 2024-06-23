@@ -17,8 +17,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route path="/" element={<App />}></Route>
         <Route path="/posts" element={<PostsList />}></Route>
-        <Route path="/posts/agregar" element={<PostsAdd />}></Route>
-        <Route path="/posts/editar/:id" element={<PostsEdit />}></Route>
+        <Route path="/posts/add" element={<PostsAdd />}></Route>
+        <Route path="/posts/edit/:id" element={<PostsEdit />}></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

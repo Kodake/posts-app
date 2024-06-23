@@ -1,4 +1,4 @@
-import Swal, { SweetAlertIcon } from 'sweetalert2'
+import Swal, { SweetAlertIcon } from "sweetalert2";
 
 const useNotifications = (
   title: string,
@@ -9,9 +9,9 @@ const useNotifications = (
     title: `${title}`,
     html: `${detail}`,
     icon: `${icon}`,
-    confirmButtonColor: '#3085d6',
+    confirmButtonColor: "#3085d6",
     allowOutsideClick: true,
-  })
-}
+  });
+};
 
-export default useNotifications
+export default useNotifications;
