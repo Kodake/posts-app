@@ -1,22 +1,17 @@
-import create from "zustand";
+import { create } from "zustand";
 import axios from "axios";
 import * as yup from "yup";
 import { VALIDATION_STRINGS } from "../messages/appMessages";
 import useNotifications from "../utils/useNotifications";
 import { renderToString } from "react-dom/server";
+import { PostDTO } from "../classes/appClasses";
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-interface PostDTO {
-  idPost: number;
-  title: string;
-  content: string;
-}
 
 interface PostStoreState {
   post: PostDTO;
   posts: PostDTO[];
-  setPost: (post: PostDTO) => void;
+  setPost: (partialPost: Partial<PostDTO>) => void;
   setPosts: (posts: PostDTO[]) => void;
   limpiar: () => void;
   validatePost: () => boolean;
@@ -27,7 +22,7 @@ interface PostStoreState {
 }
 
 const postInicial: PostDTO = {
-  idPost: 0,
+  _id: 0,
   title: "",
   content: "",
 };
@@ -47,8 +42,11 @@ const validationSchema = yup.object().shape({
 
 const usePostStore = create<PostStoreState>((set) => ({
   post: { ...postInicial },
-  posts: [],
-  setPost: (post: PostDTO) => set({ post }),
+  posts: ([] = []),
+  setPost: (partialPost) =>
+    set((state) => ({
+      post: { ...state.post, ...partialPost },
+    })),
   setPosts: (posts: PostDTO[]) => set({ posts }),
   limpiar: () => set({ post: postInicial }),
 
@@ -80,7 +78,7 @@ const usePostStore = create<PostStoreState>((set) => ({
     try {
       const resp = await axios.get(url);
       const data = resp.data;
-      set({ post: data });
+      set({ posts: data });
     } catch (error) {
       console.error(error);
     }
@@ -114,7 +112,7 @@ const usePostStore = create<PostStoreState>((set) => ({
   },
 
   actualizar: async () => {
-    const url = `${API_URL}/posts/${usePostStore.getState().post.idPost}`;
+    const url = `${API_URL}/posts/${usePostStore.getState().post._id}`;
     try {
       await axios.put(url, usePostStore.getState().post);
       usePostStore.getState().limpiar();
