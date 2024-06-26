@@ -16,6 +16,7 @@ interface PostStoreState {
   buscarPorId: (id: string) => Promise<void>;
   guardar: () => Promise<void>;
   actualizar: (id: string) => Promise<void>;
+  eliminar: (id: string) => Promise<void>;
 }
 
 const postInicial: CreatePostDTO = {
@@ -76,6 +77,21 @@ const usePostStore = create<PostStoreState>((set) => ({
     try {
       await axios.put(url, usePostStore.getState().post);
       usePostStore.getState().limpiar();
+      await usePostStore.getState().listar();
+    } catch (error: any) {
+      useNotifications(
+        VALIDATION_STRINGS.validationError,
+        error.response.data,
+        "error"
+      );
+      throw error;
+    }
+  },
+
+  eliminar: async (id: string) => {
+    const url = `${API_URL}/${id}`;
+    try {
+      await axios.delete(url);
       await usePostStore.getState().listar();
     } catch (error: any) {
       useNotifications(
