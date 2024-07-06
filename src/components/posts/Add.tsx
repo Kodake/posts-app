@@ -4,6 +4,8 @@ import usePosts from "../../hooks/usePosts";
 const Add = () => {
   const { handleSavePost, handleInputPost, handleClearPost } = usePosts();
 
+  handleClearPost();
+
   return (
     <div className="container">
       <div className="text-center m-3">

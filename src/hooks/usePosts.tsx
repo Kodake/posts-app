@@ -3,6 +3,7 @@ import useNotifications from "../utils/useNotifications";
 import store from "../store/postStore";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
+import validatePost from "../utils/useValidation";
 
 const usePosts = () => {
   const { id } = useParams<string>();
@@ -51,8 +52,12 @@ const usePosts = () => {
   const handleSavePost = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const post = await guardar();
-    if (post === null) {
+    if (!validatePost(post)) {
+      return;
+    }
+
+    const postSaved = await guardar();
+    if (postSaved === null) {
       return;
     }
     nav("/posts");
@@ -66,8 +71,12 @@ const usePosts = () => {
   const handleUpdatePost = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const post = await actualizar(id!);
-    if (post === null) {
+    if (!validatePost(post)) {
+      return;
+    }
+
+    const postUpdated = await actualizar(id!);
+    if (postUpdated === null) {
       return;
     }
     nav("/posts");
@@ -80,24 +89,30 @@ const usePosts = () => {
 
   const handleDeleteConfirmation = async (id: string) => {
     const result = await Swal.fire({
-        title: '¿Estás seguro?',
-        text: 'No se puede revertir este cambio',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí, eliminarlo',
-        allowOutsideClick: false,
+      title: "¿Estás seguro?",
+      text: "No se puede revertir este cambio",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminarlo",
+      allowOutsideClick: false,
     });
 
     if (result.isConfirmed) {
-        await eliminar(id);
-        useNotifications('Eliminado', 'El registro ha sido eliminado satisfactoriamente.', 'success');
+      await eliminar(id);
+      useNotifications(
+        "Eliminado",
+        "El registro ha sido eliminado satisfactoriamente.",
+        "success"
+      );
     }
-};
+  };
 
   const handleClearPost = () => {
-    limpiar;
+    useEffect(() => {
+      limpiar();
+    }, []);
   };
 
   return {

@@ -14,7 +14,7 @@ const validationSchema = yup.object().shape({
     .string()
     .required(VALIDATION_STRINGS.contentRequired)
     .min(2, VALIDATION_STRINGS.titleMinLength)
-    .min(50, VALIDATION_STRINGS.contentMinLength),
+    .min(50, VALIDATION_STRINGS.contentMaxLength),
 });
 
 const validatePost = (post: CreatePostDTO | PostDTO) => {
